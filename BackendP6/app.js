@@ -4,7 +4,9 @@ const app = express()
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-mongoose.connect('mongodb+srv://1hKx79cGCAIxuI8Q:1hKx79cGCAIxuI8Q@cluster0.ercbq.mongodb.net/Mydatabase?retryWrites=true&w=majority',
+const helmet = require("helmet");
+require('dotenv').config();
+mongoose.connect(process.env.MongooseURL,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
