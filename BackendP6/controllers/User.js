@@ -1,9 +1,9 @@
-const bcrypt = require('bcrypt')
-const user = require('../models/User')
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passwordValidator = require('password-validator');
 
+const User = require('../models/User')
 
-var passwordValidator = require('password-validator');
 var schema = new passwordValidator();
 schema
 .is().min(8)                                    // Minimum length 8
@@ -13,17 +13,16 @@ schema
 .has().digits(2)                                // Must have at least 2 digits
 .has().not().spaces()                           // Should not have spaces
 
-
-
-
 exports.signup = (req, res, next) => {
-  if (!schema.validate (req.body.password)) { return res.status(400).json ({ error: "Mot de passe non conforme! veuillez choisir un mot de passe de huit caracteres minimum au moins une majuscule une minuscule deux chiffres et pas d'espace."}) }
+  if (!schema.validate (req.body.password)) {
+    return res.status(400).json ({ error: "Mot de passe non conforme! veuillez choisir un mot de passe de huit caracteres minimum au moins une majuscule une minuscule deux chiffres et pas d'espace."});
+  }
   else {
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
       const user = new User({
         email: req.body.email,
-        password: hash
+        password: hash,
       });
       user.save()
         .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
